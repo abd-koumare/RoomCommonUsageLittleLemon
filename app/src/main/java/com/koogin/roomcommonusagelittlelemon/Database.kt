@@ -1,7 +1,6 @@
 package com.koogin.roomcommonusagelittlelemon
 
 import android.content.Context
-import androidx.room.AutoMigration
 import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Delete
@@ -17,7 +16,7 @@ import androidx.room.Update
 @Entity(tableName = "user_table")
 data class User(
     @PrimaryKey(autoGenerate = true)
-    var id: Int,
+    var id: Int = 0,
     var name: String,
     var age: Int
 )
@@ -46,10 +45,8 @@ interface UserDao {
 
 @Database(
     entities = [User::class],
-    version = 1, exportSchema = false,
-    autoMigrations = [
-        AutoMigration(from = 1, to = 2)
-    ]
+    version = 1,
+    exportSchema = false,
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
@@ -69,10 +66,11 @@ abstract class AppDatabase : RoomDatabase() {
                         context.applicationContext,
                         AppDatabase::class.java,
                         "room-common-usage-db"
-                    ).allowMainThreadQueries()
+                    )
+                        .allowMainThreadQueries()
                         .build()
-                        INSTANCE = instance
-                        return instance
+                INSTANCE = instance
+                return instance
             }
         }
     }
